@@ -6,9 +6,9 @@ export default function App() {
 
 
   return <>
-    {popupVisible && <button className='btn' onClick={() => setPopupVisible(false)}>팝업닫기</button>}
-    {popupVisible || <button className='btn' onClick={() => setPopupVisible(true)}>팝업열기</button>}
-
+    <button className='btn' onClick={() => setPopupVisible(!popupVisible)}>
+      팝업{popupVisible ? "닫기" : "열기"}
+    </button>
     <div className='my-5 border'></div>
     {popupVisible && <div style={{width: 100, height: 100, border}}></div>}
   </>
