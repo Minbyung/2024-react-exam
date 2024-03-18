@@ -1,62 +1,44 @@
 import React, { useState } from 'react';
 
 export default function App() {
-  const [no, setNo] = useState("");
-
-  const [recordedNos, setRecordedNos] = useState([10, 20, 30]);
-
-  const saveNo = (form) => {
-    form.no.value = form.no.value.trim();
-
-    if (form.no.value.length == 0) {
-      alert('숫자를 입력해주세요');
-      form.no.focus();
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const form = e.target;
+    
+    form.name.value = form.name.value.trim();
+    
+    if ( form.name.value.length == 0 ) {
+      alert('이름을 입력해주세요.');
+      form.name.focus();
       return;
     }
-
-    setRecordedNos([...recordedNos, form.no.value]);
-    form.no.value = '';
-    form.no.focus();
-  };
-
-  //const li = [1, 2, 3].map((el, index) => <li key={index}>{el}</li>);
-  const li = recordedNos.map((el, index) => <li key={index}>{el}</li>);
-
-  return (
-    <>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          saveNo(e.target);
-        }}
-      >
-        <input
-          type="number"
-          name="no"
-          // value={no}
-          onChange={(e) => setNo(e.target.valueAsNumber)}
-        />
-        <button type="submit">기록</button>
-      </form>
-
-      <hr />
-
-      <h1>기록된 숫자 v1</h1>
-      {recordedNos.join(",")}
-
-      <hr />
-
-      <h1>기록된 숫자 v2</h1>
-      <ul>{li}</ul>
-
-      <hr />
-
-      <h1>기록된 숫자 v2-2</h1>
-      <ul>
-        {recordedNos.map((el, index) => (
-          <li key={index}>{el}</li>
-        ))}
-      </ul>
-    </>
-  );
+    
+    form.age.value = form.age.value.trim();
+    
+    if ( form.age.value.length == 0 ) {
+      alert('나이를 입력해주세요.');
+      form.age.focus();
+      return;
+    }
+    
+    const name = form.name.value;
+    const age = form.age.valueAsNumber;
+    
+    alert(`이름 : ${name}, 나이 : ${age}`);
+    
+    form.name.value = '';
+    form.age.value = '';
+    
+    form.name.focus();
+  }
+  
+  return <>
+    <form onSubmit={onSubmit}>
+      <input name="name" type="text" placeholder="이름을 입력해주세요." autoComplete="off" />
+      <br />
+      <input name="age" type="number" placeholder="나이를 입력해주세요." defaultValue="20" />
+      <br />
+      <input type="submit" value="전송" />
+    </form>
+  </>;
 }
