@@ -17,18 +17,9 @@ export default function App() {
     noInputRef.current.focus();
   };
 
-  const removeNo5 = () => {
-    const newRecordedNos = recordedNos.filter((el) => el != 5);
+  const removeNo5 = (index) => {
+    const newRecordedNos = recordedNos.filter((_, _index) => _index != index);
     setRecordedNos(newRecordedNos);
-  }
-
-  const removeFirst = () => {
-    const newRecordedNos = recordedNos.filter((_, index) => index != 0);
-    setRecordedNos(newRecordedNos);
-  }
-
-  const removeLast = () => {
-    setRecordedNos(recordedNos.filter((_, index) => index != recordedNos.length - 1));
   }
   
   return (
@@ -55,9 +46,10 @@ export default function App() {
 
       <hr />
 
-      <button className='btn btn-primary' onClick={removeNo5}>숫자 5 삭제</button>
-      <button className='btn btn-primary' onClick={removeFirst}>첫 숫자 삭제</button>
-      <button className='btn btn-primary' onClick={removeLast}>마지막 숫자 삭제</button>
+      <button className='btn btn-primary' onClick={() => removeNo5(0)}>index 0 삭제</button>
+      <button className='btn btn-primary' onClick={() => removeNo5(1)}>index 1 삭제</button>
+      <button className='btn btn-primary' onClick={() => removeNo5(2)}>index 2 삭제</button>
+      <button className='btn btn-primary' onClick={() => removeNo5(3)}>index 3 삭제</button>
     </>
   );
 }
