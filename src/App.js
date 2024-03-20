@@ -22,6 +22,11 @@ export default function App() {
     setRecordedNos(newRecordedNos);
   }
   
+  const modifyNo = (index, newNo) => {
+    const newRecordedNos = recordedNos.map((el, _index) => _index == index ? newNo : el);
+    setRecordedNos(newRecordedNos);
+  }
+
   return (
     <>
       <form
@@ -48,10 +53,13 @@ export default function App() {
 
       <ul>
         {recordedNos.map((el, index) => (
-          <li key={index} className='flex'>
-            <span className='w-7'>{el}</span>
-            <span className='w-7'>{index}</span>
+          <li key={index} className='flex g-5'>
+            <span className='w-10'>{el}</span>
+            <span className='w-10'>:{index}</span>
             <button className='btn btn-primary btn-xs' onClick={() => removeNo(index)}>삭제</button>
+            <button className='btn btn-primary btn-xs' onClick={() => modifyNo(index, el + 1)}>+1</button>
+            <button className='btn btn-primary btn-xs' onClick={() => modifyNo(index, el - 1)}>-1</button>
+            <button className='btn btn-primary btn-xs' onClick={() => modifyNo(index, 10)}>10</button>
           </li>
         ))}
       </ul>
