@@ -17,7 +17,7 @@ export default function App() {
     noInputRef.current.focus();
   };
 
-  const removeNo5 = (index) => {
+  const removeNo = (index) => {
     const newRecordedNos = recordedNos.filter((_, _index) => _index != index);
     setRecordedNos(newRecordedNos);
   }
@@ -46,10 +46,15 @@ export default function App() {
 
       <hr />
 
-      <button className='btn btn-primary' onClick={() => removeNo5(0)}>index 0 삭제</button>
-      <button className='btn btn-primary' onClick={() => removeNo5(1)}>index 1 삭제</button>
-      <button className='btn btn-primary' onClick={() => removeNo5(2)}>index 2 삭제</button>
-      <button className='btn btn-primary' onClick={() => removeNo5(3)}>index 3 삭제</button>
+      <ul>
+        {recordedNos.map((el, index) => (
+          <li key={index} className='flex'>
+            <span className='w-7'>{el}</span>
+            <span className='w-7'>{index}</span>
+            <button className='btn btn-primary btn-xs' onClick={() => removeNo(index)}>삭제</button>
+          </li>
+        ))}
+      </ul>
     </>
   );
 }
