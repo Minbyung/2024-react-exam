@@ -1,68 +1,66 @@
 import React, { useState, useRef } from 'react';
+import classnames from 'classnames';
 
-export default function App() {
-  const noInputRef = useRef(null);
-  const [no, setNo] = useState("");
+let NotifyOnce_workDone = false;
 
-  const [recordedNos, setRecordedNos] = useState([5, 10, 5, 15, 20, 30, 25, 5, 10, 20, 5, 5]);
 
-  const saveNo = () => {
-    if (no === "") {
-      alert("숫자를 입력해주세요.");
-      return;
-    }
+function NorifyOnce({children}) {
+  const [visible, setVisible] = useState(false);
+ 
+  if ( NotifyOnce_workDone == false ) {
+    setTimeout(function() {
+      setVisible(true);
+    }, 1000);
 
-    setRecordedNos([...recordedNos, no]);
-    setNo("");
-    noInputRef.current.focus();
-  };
+    setTimeout(function() {
+      setVisible(false);
+    }, 3000);
 
-  const removeNo = (index) => {
-    const newRecordedNos = recordedNos.filter((_, _index) => _index != index);
-    setRecordedNos(newRecordedNos);
-  }
-  
-  const modifyNo = (index, newNo) => {
-    const newRecordedNos = recordedNos.map((el, _index) => _index == index ? newNo : el);
-    setRecordedNos(newRecordedNos);
+
+    NotifyOnce_workDone = true;
   }
 
   return (
+    <div
+      className={classnames(
+        "fixed transition-all right-[10px]",
+        {
+          "top-[-60px]" : !visible
+        },
+        {
+          "top-[5px]" : visible
+        }
+      )}
+    >
+      {children}
+    </div>
+  )
+}
+
+
+function Alert({color:color_, children}) {
+  const color = color_ ?? "white";
+  
+  return ( 
+    <div role="alert" className="alert alert-info">
+      <div className={`text-[${color}]`}>
+        <i className="fa-solid fa-face-smile"></i>
+        <span>{children}</span>
+      </div>
+    </div>
+  )
+}
+    
+export default function App() {
+  return (
     <>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          saveNo();
-        }}
-      >
-        <input
-          type="number"
-          ref={noInputRef}
-          value={no}
-          onChange={(e) => setNo(e.target.valueAsNumber)}
-        />
-        <button type="submit">기록</button>
-      </form>
-
-      <hr />
-
-      <h1>기록된 숫자 v1</h1>
-      {recordedNos.join(",")}
-
-      <hr />
-
-      <ul>
-        {recordedNos.map((el, index) => (
-          <li key={index} className='flex g-5'>
-            <span className='w-10'>{el}</span>
-            <span className='w-10'>:{index}</span>
-            <button className='btn btn-primary btn-xs' onClick={() => removeNo(index)}>삭제</button>
-            <button className='btn btn-primary btn-xs' onClick={() => modifyNo(index, el + 1)}>+1</button>
-            <button className='btn btn-primary btn-xs' onClick={() => modifyNo(index, el - 1)}>-1</button>
-            <button className='btn btn-primary btn-xs' onClick={() => modifyNo(index, 10)}>10</button>
-          </li>
-        ))}
-      </ul>
+      <NorifyOnce>
+        <Alert>안녕</Alert>
+      </NorifyOnce>
+      
+      <div>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi adipisci corporis ratione voluptates nostrum aliquid quis magnam ab voluptatum rerum autem iste, sequi corrupti, assumenda modi voluptatibus tenetur perferendis ducimus?
+      </div>
     </>
   );
 }
