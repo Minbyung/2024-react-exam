@@ -1,21 +1,29 @@
 import React, { useState } from 'react';
 
 export default function App() {
-  const [selectedGender, setSelectedGender] = useState('M');
-
+  const ageBands = [
+    "10대",
+    "20대",
+    "30대",
+    "40대",
+    "50대",
+    "그외",
+  ]
+  const [selectedAgeBand, setSelectedAgeBand] = useState(ageBands[3]);
 
 
   return (
     <>
-    <label>
-      <input type="radio" name='gender' onChange={() => setSelectedGender('W')} checked={selectedGender == "W"}/>
-      여성
-    </label>
-    
-    <label>
-      <input type="radio" name='gender' onChange={() => setSelectedGender('M')} checked={selectedGender == "M"}/>
-      남성
-    </label>
+    <select onChange={(e) => setSelectedAgeBand(e.target.value)}>
+      <option selected disabled>- 나이대역 -</option>
+      {ageBands.map(ageBand => 
+        <option selected={ageBand == selectedAgeBand} value={ageBand}>
+          {ageBand}
+        </option>
+      )}
+    </select>
+
+    <div>현재 : {selectedAgeBand}</div>
     </>
   );
 }
