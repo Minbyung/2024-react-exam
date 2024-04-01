@@ -1,29 +1,41 @@
 import React, { useState } from 'react';
 
 export default function App() {
-  const ageBands = [
-    "10대",
-    "20대",
-    "30대",
-    "40대",
-    "50대",
-    "그외",
-  ]
-  const [selectedAgeBand, setSelectedAgeBand] = useState(ageBands[3]);
+  const [todos, setTodos] = useState([]);
 
+  const addTodo = (newTodo) => {
+    const newTodos = [...todos, todos.length + 1];
+    setTodos(newTodos);
+  }
+
+  const removeTodo = (index) => {
+    const newTodos = todos.filter((_, _index) => _index != index);
+    setTodos(newTodos);
+  }
+
+  const mdoifyTodo = (index, newTodo) => {
+    const newTodos = todos.map((todo, _index) => _index != index ? todo : newTodo);
+    setTodos(newTodos);
+  }
+
+  const onAddBtnClick = () => {
+    addTodo(todos.length + 1);
+  }
+
+  const onRemoveBtnClick = () => {
+    removeTodo(1);
+  }
+
+  const onEditBtnClick = () => {
+    mdoifyTodo(1, "안녕");
+  }
 
   return (
     <>
-    <select onChange={(e) => setSelectedAgeBand(e.target.value)}>
-      <option selected disabled>- 나이대역 -</option>
-      {ageBands.map(ageBand => 
-        <option selected={ageBand == selectedAgeBand} value={ageBand}>
-          {ageBand}
-        </option>
-      )}
-    </select>
-
-    <div>현재 : {selectedAgeBand}</div>
+      <div>{JSON.stringify(todos)}</div>
+      <button className='btn btn-info' onClick={onAddBtnClick}>추가</button>
+      <button className='btn btn-info' onClick={onRemoveBtnClick}>삭제</button>
+      <button className='btn btn-info' onClick={onEditBtnClick}>수정</button>
     </>
   );
 }
