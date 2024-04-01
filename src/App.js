@@ -1,10 +1,18 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 export default function App() {
   const [todos, setTodos] = useState([]);
+  const lastTodoIdRef = useRef(0);
 
-  const addTodo = (newTodo) => {
-    const newTodos = [...todos, todos.length + 1];
+  const addTodo = (newContent) => {
+    const id = ++lastTodoIdRef.current;
+
+    const newTodo = {
+      id,
+      regDate: "2020-12-12 12:12:12",
+      content: newContent,
+    }
+    const newTodos = [...todos, newTodo];
     setTodos(newTodos);
   }
 
@@ -13,29 +21,38 @@ export default function App() {
     setTodos(newTodos);
   }
 
-  const mdoifyTodo = (index, newTodo) => {
-    const newTodos = todos.map((todo, _index) => _index != index ? todo : newTodo);
+  const modifyTodo = (index, newContent) => {
+    const newTodos = todos.map((todo, _index) => _index != index ? todo : {...todo, content: newContent});
     setTodos(newTodos);
   }
 
+
   const onAddBtnClick = () => {
-    addTodo(todos.length + 1);
+    addTodo("안녕");
   }
 
   const onRemoveBtnClick = () => {
     removeTodo(1);
   }
 
-  const onEditBtnClick = () => {
-    mdoifyTodo(1, "안녕");
+  const onModifyBtnClick = () => {
+    modifyTodo(3, "수정");
   }
+
 
   return (
     <>
-      <div>{JSON.stringify(todos)}</div>
       <button className='btn btn-info' onClick={onAddBtnClick}>추가</button>
       <button className='btn btn-info' onClick={onRemoveBtnClick}>삭제</button>
-      <button className='btn btn-info' onClick={onEditBtnClick}>수정</button>
+      <button className='btn btn-info' onClick={onModifyBtnClick}>수정</button>
+      <hr />
+      <ul>
+        {todos.map((todo, index) => (
+          <li key={index}>
+            {todo.id} {todo.regDate} {todo.content}
+          </li>
+        ))}
+      </ul>
     </>
   );
 }
