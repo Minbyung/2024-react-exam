@@ -1,17 +1,19 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { 
   AppBar, 
   Button, 
   Chip, 
   TextField, 
   Toolbar, 
-  Box, 
   SwipeableDrawer, 
   List, 
   ListItem, 
   ListItemButton, 
-  Divider } from "@mui/material";
+  Divider,
+  Modal
+} from '@mui/material';
 import classNames from 'classnames';
+
 
 function useTodosState() {
   const [todos, setTodos] = useState([]);
@@ -40,11 +42,20 @@ function useTodosState() {
     setTodos(newTodos);
   }
 
+  const removeTodoById = (id) => {
+    const index = todos.findIndex((todo) => todo.id == id);
+
+    if ( index != -1 ) {
+      removeTodo(index);
+    }
+  }
+
   return {
     todos,
     addTodo,
     removeTodo,
-    modifyTodo
+    modifyTodo,
+    removeTodoById
   }
 }
 
@@ -53,8 +64,8 @@ function TodoListItem({todo, index, openDrawer}) {
     <>
       <li key={todo.id} className='mt-10'>
         <div className='flex gap-3'>
-          <Chip label={todo.id} variant="outlined"/>
-          <Chip label={todo.regDate} color="primary" variant="outlined"/>
+          <Chip label={todo.id} variant="outlined" />
+          <Chip label={todo.regDate} color="primary" variant="outlined" />
         </div>
         <div className='mt-4 shadow rounded-[10px] flex'>
           <Button className='flex-shrink-0 !rounded-[10px_0_0_10px]'>
@@ -69,14 +80,15 @@ function TodoListItem({todo, index, openDrawer}) {
                 { "text-[#dfdfdf]" : index % 2 != 0 }
               )}
             >
-              <i className="fa-solid fa-check"></i></span>
+              <i className="fa-solid fa-check"></i>
+            </span>
           </Button>
-          <div className='flex-shrink-0 w-[2px] bg-[#dfdfdf] my-5'></div>
+          <div className="flex-shrink-0 w-[2px] bg-[#dfdfdf] my-5"></div>
           <div className='flex-grow whitespace-pre-wrap leading-relaxed hover:text-[color:var(--mui-color-primary-main)] flex items-center my-5 mx-3'>
             {todo.content}
           </div>
           <Button
-            onClick={() => openDrawer(todo.id)} 
+            onClick={() => openDrawer(todo.id)}
             className='flex-shrink-0 !rounded-[0_10px_10px_0]'
           >
             <span className='text-[#dfdfdf] text-2xl'>
@@ -86,7 +98,7 @@ function TodoListItem({todo, index, openDrawer}) {
         </div>
       </li>
     </>
-  )
+  );
 }
 
 function useTodoOptionDrawerState() {
@@ -103,12 +115,37 @@ function useTodoOptionDrawerState() {
   };
 }
 
-function TodoOptionDrawer({state}) {
+function useEditTodoModalState() {
+  const [opened, setOpened] = useState(false);
+
+  const open = () => {
+    setOpened(true);
+  }
+
+  const close = () => {
+    setOpened(false);
+  }
+
+  return {
+    opened,
+    open,
+    close
+  };
+}
+
+function TodoOptionDrawer({todosState, state}) {
+  const editTodoModalState = useEditTodoModalState();
+
+  const removeTodo = () => {
+    todosState.removeTodoById(state.todoId);
+    state.close();
+  }
+
   return(
     <>
-      <SwipeableDrawer  
+      <SwipeableDrawer
         anchor={"bottom"}
-        open={state.opened} 
+        open={state.opened}
         onClose={state.close}
       >
         <List className='!py-0'>
@@ -116,43 +153,49 @@ function TodoOptionDrawer({state}) {
             <span className="text-[color:var(--mui-color-primary-main)] font-bold">{state.todoId}번</span>
           </ListItem>
           <Divider variant="middle" />
-          <ListItemButton className='!p-5'>
+          <ListItemButton className='!p-5' onClick={editTodoModalState.open}>
             <i class="fa-regular fa-pen-to-square"></i>
             <span className='ml-1'>수정</span>
-          </ListItemButton >
-          <ListItemButton className='!p-5'>
+            </ListItemButton>
+          <ListItemButton className='!p-5' onClick={removeTodo}>
             <i class="fa-regular fa-trash-can"></i>
             <span className='ml-1'>삭제</span>
-          </ListItemButton >
+          </ListItemButton>
         </List>
-      </SwipeableDrawer >
+      </SwipeableDrawer>
+
+      <Modal
+        open={editTodoModalState.opened}
+        onClose={editTodoModalState.close}
+        className='flex justify-center items-center'
+      >
+        <div className='bg-white rounded-[10px] p-10'>안녕</div>
+      </Modal>
     </>
   );
 }
 
-
 function TodoList({todosState}) {
-  const todoOptionDrawerState = useTodoOptionDrawerState();  
-
+  const todoOptionDrawerState = useTodoOptionDrawerState();
 
   return (
     <>
-      <TodoOptionDrawer state={todoOptionDrawerState} />
-      
+      <TodoOptionDrawer todosState={todosState} state={todoOptionDrawerState} />
+
       <div className='mt-4 px-4'>
         <ul>
           {todosState.todos.map((todo, index) => (
             <TodoListItem 
-              key={todo.id} 
-              todo={todo} 
-              index={index} 
+              key={todo.id}
+              todo={todo}
+              index={index}
               openDrawer={todoOptionDrawerState.open}
             />
           ))}
         </ul>
-      </div> 
+      </div>
     </>
-  )
+  );
 }
 
 function NewTodoForm({todosState}) {
@@ -189,7 +232,7 @@ function NewTodoForm({todosState}) {
         <Button type="submit" variant='contained'>추가</Button>
       </form>
     </>
-  )
+  );
 }
 
 export default function App() {
@@ -211,6 +254,8 @@ export default function App() {
         </Toolbar>
       </AppBar>
       <Toolbar/>
+      
+      <img src="https://imgur.com/hv1oncI" alt="" />
 
       <NewTodoForm todosState={todosState} />
 
@@ -218,8 +263,6 @@ export default function App() {
     </>
   );
 }
-
-
 
 // 유틸리티
 
