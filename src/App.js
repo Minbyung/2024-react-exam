@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect, useMemo } from 'react';
 
 import {Routes, Route, Navigate, useLocation, NavLink, useParams, useNavigate} from "react-router-dom";
 import { useRecoilState, atom } from 'recoil';
+import { produce } from 'immer';
 
 const todosAtom = atom({
   key: "app/todosAtom",
@@ -26,7 +27,12 @@ function useTodossTate() {
       content
     }
 
-    const newTodos = [newTodo, ...todos];
+    // 기존방식
+    // const newTodos = [newTodo, ...todos];
+    const newTodos = produce(todos, (draft) => {
+      draft.unshift(newTodo);
+    })
+
     setTodos(newTodos);
   }
 
@@ -45,7 +51,13 @@ function useTodossTate() {
 
     if ( index == -1 ) return;
 
-    const newTodos = todos.filter((_, _index) => index != _index);
+    // 기존 방식
+    // const newTodos = todos.filter((_, _index) => index != _index);
+
+    const newTodos = produce(todos, (draft) => {
+      draft.splice(index, 1);
+    })
+
     setTodos(newTodos);
   }
 
@@ -54,8 +66,15 @@ function useTodossTate() {
 
     if ( index == -1 ) return;
 
-    const newTodos = todos.map((todo, _index) => 
-    index == _index ? {...todo, content} : todo);
+    // 기존 방식
+    // const newTodos = todos.map((todo, _index) => 
+    //   index == _index ? {...todo, content} : todo);
+
+    const newTodos = produce(todos, (draft) => {
+      draft[index].content = content;
+    })
+
+
     setTodos(newTodos);
   }
 
@@ -75,7 +94,7 @@ function TodoListItem({todo}) {
     <>
       <li key={todo.id}>
         {todo.id} : {todo.content}
-        <NavLink to={`/edit/${todo.id}`}>수정</NavLink>
+        <NavLink to={`/edit/${todo.id}`} className='btn btn-sm'>수정</NavLink>
         <button className='btn btn-sm'
         onClick={() => window.confirm(`${todo.id}번 할 일을 삭제하시겠습니까?`) &&
         todosState.removeTodoById(todo.id)}>
